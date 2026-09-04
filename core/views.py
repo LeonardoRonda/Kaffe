@@ -1,3 +1,5 @@
 from django.shortcuts import render
+from .models import PRODUCTOS
 
-# Create your views here.
+def lista_productos(request):
+    return render(request, "core/lista_productos.html", {"productos": PRODUCTOS})

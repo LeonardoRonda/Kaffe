@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Menú - Kaffe{% endblock %}
+
+{% block content %}
+<h1>Menú de Productos</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Descripción</th>
+            <th>Disponible</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.categoria|title }}</td>
+            <td class="precio">${{ producto.precio }}</td>
+            <td>{{ producto.descripcion }}</td>
+            <td class="{% if producto.disponible %}disponible{% else %}no-disponible{% endif %}">
+                {% if producto.disponible %}Sí{% else %}No{% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
