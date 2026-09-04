@@ -2,7 +2,7 @@
 
 Proyecto base de Django construido bajo el patrón **MVT** (Model – View – Template).
 
-## Problemática real
+## Problemática
 
 La cafetería **Kaffe** maneja su menú de productos (bebidas, postres y extras)
 de forma manual, registrando los datos en papel o en hojas de cálculo que se
