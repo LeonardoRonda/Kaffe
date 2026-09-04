@@ -60,10 +60,6 @@ consultar los productos del menú de forma ordenada y en un solo lugar.
 5. **Template** → la vista renderiza un template que hereda de `base.html`.
 6. **Response** → se devuelve el HTML al navegador.
 
-> **Nota sobre datos en memoria:** al no usar base de datos, los productos
-> agregados se guardan en la lista `PRODUCTOS` en memoria y **se pierden al
-> reiniciar el servidor**. Este comportamiento es esperado en este laboratorio.
-
 ## Capturas del flujo
 
 ### 1. Listado de productos
