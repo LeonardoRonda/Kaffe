@@ -15,6 +15,31 @@
         .disponible { color: green; font-weight: bold; }
         .no-disponible { color: red; font-weight: bold; }
         .precio { font-weight: bold; color: #8B4513; }
+
+        label { display: block; font-weight: 600; margin-bottom: 0.35rem; color: #444; }
+        .form-control {
+            width: 100%; padding: 0.6rem 0.8rem; border: 1px solid #ccc;
+            border-radius: 6px; font-size: 1rem; box-sizing: border-box;
+            font-family: inherit;
+        }
+        .form-control:focus { outline: none; border-color: #8B4513; box-shadow: 0 0 0 2px rgba(139,69,19,0.15); }
+        textarea.form-control { resize: vertical; }
+        .form-group { margin-bottom: 1.1rem; }
+        .btn {
+            background: #8B4513; color: white; border: none; padding: 0.7rem 1.4rem;
+            border-radius: 6px; font-size: 1rem; cursor: pointer; font-weight: 600;
+        }
+        .btn:hover { background: #a0522d; }
+        .btn-secondary {
+            background: #eee; color: #333; border: none; padding: 0.7rem 1.4rem;
+            border-radius: 6px; font-size: 1rem; cursor: pointer; text-decoration: none;
+            display: inline-block; font-weight: 600;
+        }
+        .btn-secondary:hover { background: #ddd; }
+        .errorlist { color: #c0392b; margin: 0.2rem 0 0 0; padding-left: 1.2rem; font-size: 0.9rem; }
+        .checkbox-group { display: flex; align-items: center; gap: 0.5rem; }
+        .checkbox-group input[type="checkbox"] { width: auto; accent-color: #8B4513; cursor: pointer; }
+        .actions { display: flex; gap: 0.8rem; margin-top: 1.2rem; align-items: center; }
     </style>
 </head>
 <body>

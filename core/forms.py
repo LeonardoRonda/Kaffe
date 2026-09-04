@@ -18,10 +18,11 @@ class ProductoForm(forms.Form):
         widget=forms.Select(attrs={"class": "form-control"})
     )
     precio = forms.DecimalField(
-        max_digits=10,
-        decimal_places=0,
-        label="Precio",
-        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "Ej: 2500"})
+        max_digits=6,
+        decimal_places=2,
+        min_value=0.01,
+        label="Precio (S/)",
+        widget=forms.NumberInput(attrs={"class": "form-control", "step": "0.01", "placeholder": "Ej: 12.00"})
     )
     descripcion = forms.CharField(
         required=False,
@@ -32,5 +33,5 @@ class ProductoForm(forms.Form):
         required=False,
         initial=True,
         label="Disponible",
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"})
+        widget=forms.CheckboxInput(attrs={"class": "checkbox-input"})
     )

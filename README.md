@@ -42,3 +42,41 @@ consultar los productos del menú de forma ordenada y en un solo lugar.
 | `precio`     | float| Sí          | Control de costos y cobro al cliente.                     |
 | `descripcion`| str  | No          | Información adicional opcional para el cliente.           |
 | `disponible` | bool | Sí          | Indica si el producto puede venderse o está agotado.      |
+
+## Rutas de la aplicación
+
+| Ruta        | Vista                  | Descripción                                      |
+|-------------|-------------------------|--------------------------------------------------|
+| `/`         | `lista_productos`       | Listado de productos del menú.                   |
+| `/crear/`   | `crear_producto`        | Formulario para registrar un nuevo producto.     |
+
+## Flujo MVT de la aplicación
+
+1. **Request** → el usuario navega a `GET /` o `POST /crear/`.
+2. **URL** → `kaffe/urls.py` enruta a la vista correspondiente de `core.views`.
+3. **View** → la vista procesa la petición (lee o agrega datos).
+4. **Model** → en este proyecto, el "modelo" es la lista estática `PRODUCTOS` de
+   `core/models.py` (sin base de datos).
+5. **Template** → la vista renderiza un template que hereda de `base.html`.
+6. **Response** → se devuelve el HTML al navegador.
+
+> **Nota sobre datos en memoria:** al no usar base de datos, los productos
+> agregados se guardan en la lista `PRODUCTOS` en memoria y **se pierden al
+> reiniciar el servidor**. Este comportamiento es esperado en este laboratorio.
+
+## Capturas del flujo
+
+### 1. Listado de productos
+Página principal que muestra todos los productos del menú registrados.
+
+![Listado de productos](listado.png)
+
+### 2. Formulario de registro
+Formulario para agregar un producto nuevo con sus datos (nombre, categoría, precio, descripción y disponibilidad).
+
+![Formulario de registro](formulario.png)
+
+### 3. Producto registrado
+El listado vuelve a mostrarse con el nuevo producto reflejado.
+
+![Producto registrado](nuevo-producto.png)
