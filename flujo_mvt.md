@@ -87,11 +87,3 @@ Así el proyecto organiza todo y la app hace el trabajo de mostrar y guardar
 productos.
 
 ---
-
-## Nota: los datos viven en memoria
-
-Como esta app **no usa base de datos**, los productos guardados se almacenan en la
-lista de `models.py`, que solo existe mientras el servidor está prendido. Si apagamos
-y volvemos a encender el servidor, los productos creados desaparecen y vuelve a
-aparecer solo la lista de ejemplo. Esto es un comportamiento esperado en este
-laboratorio.
