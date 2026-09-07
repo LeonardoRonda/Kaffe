@@ -72,6 +72,178 @@ core/
         └── formulario_producto.html
 ```
 
+## Código de la App
+
+### `core/models.py` — datos estáticos (sin base de datos)
+
+```python
+# Datos estáticos de productos (sin base de datos)
+PRODUCTOS = [
+    {
+        "nombre": "Café Americano",
+        "categoria": "bebida",
+        "precio": 8.00,
+        "descripcion": "Café negro clásico",
+        "disponible": True
+    },
+    {
+        "nombre": "Latte",
+        "categoria": "bebida",
+        "precio": 12.00,
+        "descripcion": "Café con leche vaporizada",
+        "disponible": True
+    },
+    {
+        "nombre": "Croissant",
+        "categoria": "postre",
+        "precio": 9.00,
+        "descripcion": "Croissant de mantequilla",
+        "disponible": True
+    },
+    {
+        "nombre": "Brownie",
+        "categoria": "postre",
+        "precio": 10.00,
+        "descripcion": "Brownie de chocolate",
+        "disponible": False
+    },
+    {
+        "nombre": "Leche de almendra",
+        "categoria": "extra",
+        "precio": 4.00,
+        "descripcion": "Alternativa vegetal",
+        "disponible": True
+    },
+]
+
+
+def agregar_producto(nombre, categoria, precio, descripcion="", disponible=True):
+    """Agrega un nuevo producto a la lista en memoria.
+    Al no haber base de datos, los datos se pierden al reiniciar el servidor."""
+    PRODUCTOS.append({
+        "nombre": nombre,
+        "categoria": categoria,
+        "precio": precio,
+        "descripcion": descripcion,
+        "disponible": disponible,
+    })
+    return PRODUCTOS[-1]
+```
+
+### `core/views.py` — listado y creación
+
+```python
+from django.shortcuts import redirect, render
+from .models import PRODUCTOS, agregar_producto
+from .forms import ProductoForm
+
+def lista_productos(request):
+    return render(request, "core/lista_productos.html", {"productos": PRODUCTOS})
+
+def crear_producto(request):
+    """Muestra el formulario (GET), valida y agrega el producto en memoria (POST)
+    y redirige al listado para confirmar que el nuevo dato aparece."""
+    if request.method == "POST":
+        form = ProductoForm(request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            agregar_producto(
+                nombre=datos["nombre"],
+                categoria=datos["categoria"],
+                precio=datos["precio"],
+                descripcion=datos["descripcion"],
+                disponible=datos["disponible"],
+            )
+            return redirect("lista_productos")
+    else:
+        form = ProductoForm()
+
+    return render(request, "core/formulario_producto.html", {"form": form})
+```
+
+### `core/forms.py` — formulario (forms.Form)
+
+```python
+from django import forms
+
+CATEGORIAS = [
+    ("bebida", "Bebida"),
+    ("postre", "Postre"),
+    ("extra", "Extra"),
+]
+
+class ProductoForm(forms.Form):
+    nombre = forms.CharField(max_length=100, label="Nombre")
+    categoria = forms.ChoiceField(choices=CATEGORIAS, label="Categoría")
+    precio = forms.DecimalField(
+        max_digits=6, decimal_places=2, min_value=0.01, label="Precio (S/)"
+    )
+    descripcion = forms.CharField(required=False, label="Descripción")
+    disponible = forms.BooleanField(required=False, initial=True, label="Disponible")
+```
+
+### `core/urls.py` — rutas de la App
+
+```python
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("", views.lista_productos, name="lista_productos"),
+    path("crear/", views.crear_producto, name="crear_producto"),
+]
+```
+
+### `core/templates/core/lista_productos.html` — listado
+
+```html
+{% extends "base.html" %}
+{% block content %}
+<h1>Menú de Productos</h1>
+<p><a href="{% url 'crear_producto' %}" class="btn">+ Agregar producto</a></p>
+<table>
+    <thead>
+        <tr><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Descripción</th><th>Disponible</th></tr>
+    </thead>
+    <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.categoria|title }}</td>
+            <td>S/ {{ producto.precio|floatformat:2 }}</td>
+            <td>{{ producto.descripcion }}</td>
+            <td>{% if producto.disponible %}Sí{% else %}No{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+```
+
+### `core/templates/core/formulario_producto.html` — formulario
+
+```html
+{% extends "base.html" %}
+{% block content %}
+<h1>Registrar nuevo producto</h1>
+<form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for error in field.errors %}
+            <ul class="errorlist"><li>{{ error }}</li></ul>
+        {% endfor %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn">Guardar producto</button>
+    <a href="{% url 'lista_productos' %}" class="btn-secondary">← Volver al menú</a>
+</form>
+{% endblock %}
+```
+
 ## Rutas de la aplicación
 
 | Ruta        | Vista                  | Descripción                                      |
@@ -88,6 +260,15 @@ core/
    `core/models.py` (sin base de datos).
 5. **Template** → la vista renderiza un template que hereda de `base.html`.
 6. **Response** → se devuelve el HTML al navegador.
+
+**Ejemplo concreto — alta del producto "Mocachino" (S/ 13.00):**
+
+1. **Request** → `POST /crear/` con `nombre=Mocachino`, `categoria=bebida`, `precio=13.00`, `descripcion=...`, `disponible=True`.
+2. **URL** → `core/urls.py` empareja `crear/` y llama a `crear_producto`.
+3. **View** → `crear_producto` valida el `ProductoForm` y, al ser válido, llama `agregar_producto(...)`.
+4. **Model** → `agregar_producto` agrega el diccionario a la lista `PRODUCTOS` (memoria, sin base de datos).
+5. **Template** → la vista redirige (`redirect`) a `lista_productos`, que renderiza `lista_productos.html` heredando `base.html`.
+6. **Response** → el navegador recibe el HTML con la tabla de **6 productos** (los 5 iniciales + Mocachino).
 
 ## Capturas del flujo
 
